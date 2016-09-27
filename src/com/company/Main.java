@@ -4,19 +4,16 @@ import com.company.Vocabulary.Vocabulary;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.Scanner;
 import java.util.Set;
 
 public class Main {
 
     public static void main(String[] args) {
-        String[] books = {"baud.fb2","bredb451.fb2","bredbTigers.fb2","chyornaya-rada.fb2",
-                "dobbskartochdomik.fb2","DumaGraf_Monte-Kristo.fb2","ImaRos.fb2",
-                "Posledniyi_Iz_MogikanI.fb2","VernJDeti_Kapitana.fb2","VernJDvadcat_Tyisyach.fb2"};
         long time = System.currentTimeMillis();
-        for(int i = 0; i < books.length; i++){
-            Parser.parseDocument(books[i]);
-        }
+        Reader reader = new Reader();
+        LineAnalyzer lineAnalyzer = new LineAnalyzer();
+        lineAnalyzer.run();
+        reader.run();
         long timeIndex = System.currentTimeMillis();
         File file = new File("result.txt");
         Set<String> wordsSet = Vocabulary.getInstance().getWordSet();
@@ -53,6 +50,40 @@ public class Main {
         System.out.println("Get sorted array:" + (timePrepare - timeIndex));
         System.out.println("Write in file:" + (timeWritten - timePrepare));
         System.out.println("Total time:" + (timeWritten - time));
+
+        BufferedReader br = null;
+
+        try {
+
+            br = new BufferedReader(new InputStreamReader(System.in));
+
+            while (true) {
+
+                System.out.print("Enter your query : ");
+                String input = br.readLine();
+
+                if ("q".equals(input)) {
+                    System.out.println("Exit!");
+                    System.exit(0);
+                }
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+
+
 
     }
 }

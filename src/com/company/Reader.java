@@ -1,17 +1,24 @@
 package com.company;
 
+import com.company.Vocabulary.Buffer;
 import com.company.Vocabulary.Vocabulary;
 
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Created by zvazhiidmytro on 11.09.16.
  */
-public class Parser {
+public class Reader implements Runnable {
 
-    protected static void parseDocument(String documentName){
+    String[] books = {"baud.fb2","bredb451.fb2","bredbTigers.fb2","chyornaya-rada.fb2",
+            "dobbskartochdomik.fb2","DumaGraf_Monte-Kristo.fb2","ImaRos.fb2",
+            "Posledniyi_Iz_MogikanI.fb2","VernJDeti_Kapitana.fb2","VernJDvadcat_Tyisyach.fb2"};
 
+    private static int _currentDocId;
+
+    protected static void parseDocument(String documentName, int docID){
+        _currentDocId = docID;
         try {
             File file = new File(documentName);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
@@ -21,7 +28,7 @@ public class Parser {
             }
             while ((line = bufferedReader.readLine()) != null && line.indexOf("</body>") < 0) {
                 if(line.indexOf("<p>") >= 0){
-                    analyzeLine(line);
+                    Buffer.getInstance().getStack().push(new BufferedNode(line,docID,1));
                 }
             }
             bufferedReader.close();
@@ -30,14 +37,11 @@ public class Parser {
         }
     }
 
-    private static void analyzeLine(String line){
-        StringTokenizer stringTokenizer = new StringTokenizer(line.replaceAll("(<((a)[^>]+)>)(.*?)(<((a)[^>]+)>)","").replaceAll("(<((.*?)[^>]+)>)",""));
-        String token = "";
-        for(int i = 0; i < stringTokenizer.countTokens(); i++){
-            token = stringTokenizer.nextToken();
-            token = token.replaceAll("[\\xAB\\x28\\x2E\\x86]", "").replaceAll("[\\xBB\\x3B\\x3A\\x2E\\x2C\\x21\\x22\\x3F\\x29\\xA9\\x2A\\x2D]","");
-            if(!token.equals("")) Vocabulary.getInstance().insertWord(token);
+    @Override
+    public void run() {
+        for(int i = 0; i < books.length; i++){
+            Reader.parseDocument(books[i],i);
         }
+        LineAnalyzer.flag = false;
     }
-
 }

@@ -1,9 +1,6 @@
 package com.company.Vocabulary;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by zvazhiidmytro on 11.09.16.
@@ -25,8 +22,12 @@ public class Vocabulary {
         return _instance;
     }
 
-    public void insertWord(String word){
-        words.put(word,word);
+    public void insertWord(String word,int docId){
+        if(words.containsKey(word)){
+            words.get(word);//.add(String);
+        }else {
+            words.put(word,word);
+        }
     }
 
     public Set<String> getWordSet(){
